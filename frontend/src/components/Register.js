@@ -19,6 +19,7 @@ const [confirmPassword, setConfirmPassword] = useState('');
 const [passwordStrength, setPasswordStrength] = useState('');
 const [showCamera, setShowCamera] = useState(false);
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('user');
   const [role, setRole] = useState('');
   const [faceImage, setFaceImage] = useState(null);
   const [message, setMessage] = useState('');
