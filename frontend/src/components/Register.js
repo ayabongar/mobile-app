@@ -46,6 +46,7 @@ const [showCamera, setShowCamera] = useState(false);
           setPasswordStrength(validatePasswordStrength(e.target.value) ? 'Strong' : 'Weak');
         }} />
         <input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+        style={{ margin: '10px' }}
         {password !== confirmPassword && <p>Passwords do not match!</p>}
         <p>{passwordStrength}</p>
       setMessage('Registration failed!');
