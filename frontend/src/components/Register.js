@@ -34,6 +34,9 @@ const [showCamera, setShowCamera] = useState(false);
   };
 
   return (
+        <input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+        {password !== confirmPassword && <p>Passwords do not match!</p>}
+        <p>{passwordStrength}</p>
     <div className="form-container">
       <h2>Register</h2>
       <form onSubmit={handleSubmit}>
