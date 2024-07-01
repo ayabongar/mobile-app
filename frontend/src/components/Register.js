@@ -46,13 +46,26 @@ const [showCamera, setShowCamera] = useState(false);
           setPasswordStrength(validatePasswordStrength(e.target.value) ? 'Strong' : 'Weak');
         }} />
         <input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-        style={{ margin: '10px' }}
-        {password !== confirmPassword && <p>Passwords do not match!</p>}
-        <p>{passwordStrength}</p>
-      setMessage('Registration failed!');
-    }
-        <button type="button" onClick={() => setShowCamera(true)}>Activate Camera</button>
-        {showCamera && <Webcam audio={false} screenshotFormat="image/jpeg" height={240} width={320} videoConstraints={{ width: 1280, height: 720, facingMode: 'user', }} onUserMedia={() => { const webcam = document.querySelector('video'); const imageSrc = webcam.getScreenshot(); handleCapture(imageSrc); }} />}
+        <button type="button" style={{ margin: '10px' }} onClick={() => setShowCamera(true)}>Activate Camera</button>
+        {showCamera && (
+          <Webcam
+            audio={false}
+            screenshotFormat="image/jpeg"
+            height={240}
+            width={320}
+            videoConstraints={{
+              width: 1280,
+              height: 720,
+              facingMode: 'user',
+            }}
+            onUserMedia={() => {
+              const webcam = document.querySelector('video');
+              const imageSrc = webcam.getScreenshot();
+              handleCapture(imageSrc);
+              setShowCamera(false);  // Close the camera once the picture is taken
+            }}
+          />
+        )}
   };
 
   return (
