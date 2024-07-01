@@ -4,6 +4,8 @@ import Webcam from 'react-webcam';
 import './styles.css';
 
 const Login = ({ history }) => {
+const [showCamera, setShowCamera] = useState(false);
+const [recoverAccount, setRecoverAccount] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [faceImage, setFaceImage] = useState(null);
