@@ -81,6 +81,7 @@ const [confirmPassword, setConfirmPassword] = useState('');
 const [passwordStrength, setPasswordStrength] = useState('');
 const [showCamera, setShowCamera] = useState(false);
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('user');
   const [role, setRole] = useState('');
   const [faceImage, setFaceImage] = useState(null);
   const [message, setMessage] = useState('');
@@ -104,10 +105,43 @@ const [showCamera, setShowCamera] = useState(false);
       return (
        <>
 
+  return (
+    <div className="form-container">
+        <select value={role} onChange={(e) => setRole(e.target.value)}>
+          <option value="user">User</option>
+          <option value="driver">Driver</option>
+        </select>
+        <input type="password" placeholder="Password" value={password} onChange={(e) => {
+          setPassword(e.target.value);
+          setPasswordStrength(validatePasswordStrength(e.target.value) ? 'Strong' : 'Weak');
+        }} />
+        <input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+        <button type="button" style={{ margin: '10px' }} onClick={() => setShowCamera(true)}>Activate Camera</button>
+        {showCamera && (
+          <Webcam
+            audio={false}
+            screenshotFormat="image/jpeg"
+            height={240}
+            width={320}
+            videoConstraints={{
+              width: 1280,
+              height: 720,
+              facingMode: 'user',
+            }}
+            onUserMedia={() => {
+              const webcam = document.querySelector('video');
+              const imageSrc = webcam.getScreenshot();
+              handleCapture(imageSrc);
+              setShowCamera(false);  // Close the camera once the picture is taken
+            }}
+          />
+        )}
+
       setMessage('Registration failed!');
     }
         <button type="button" onClick={() => setShowCamera(true)}>Activate Camera</button>
         {showCamera && <Webcam audio={false} screenshotFormat="image/jpeg" height={240} width={320} videoConstraints={{ width: 1280, height: 720, facingMode: 'user', }} onUserMedia={() => { const webcam = document.querySelector('video'); const imageSrc = webcam.getScreenshot(); handleCapture(imageSrc); }} />}
+
   };
 
   return (

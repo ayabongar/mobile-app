@@ -23,6 +23,9 @@ form {
   margin: 20px auto;
 }
 
+button {
+  margin: 10px;
+}
 input[type="text"],
 input[type="password"],
 input[type="file"] {
