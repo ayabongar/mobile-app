@@ -35,9 +35,10 @@ import './styles.css';
       const formData = new FormData();
     formData.append('username', username);
     formData.append('password', password);
-    formData.append('role', role);
-    formData.append('face_image', faceImage);
-
+          <select value={role} onChange={(e) => setRole(e.target.value)}>
+            <option value="user">User</option>
+            <option value="driver">Driver</option>
+          </select>
     try {
       const response = await axios.post('http://localhost:5000/register', formData);
       setMessage(response.data.message);
