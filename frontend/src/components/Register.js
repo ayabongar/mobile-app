@@ -5,6 +5,9 @@ import './styles.css';
 
 const Register = () => {
   const [username, setUsername] = useState('');
+const [confirmPassword, setConfirmPassword] = useState('');
+const [passwordStrength, setPasswordStrength] = useState('');
+const [showCamera, setShowCamera] = useState(false);
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('');
   const [faceImage, setFaceImage] = useState(null);
