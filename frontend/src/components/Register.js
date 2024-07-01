@@ -5,6 +5,10 @@ import './styles.css';
 
 const Register = () => {
   const [username, setUsername] = useState('');
+const validatePasswordStrength = (password) => {
+  const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  return regex.test(password);
+};
 const [confirmPassword, setConfirmPassword] = useState('');
 const [passwordStrength, setPasswordStrength] = useState('');
 const [showCamera, setShowCamera] = useState(false);
