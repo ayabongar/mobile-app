@@ -35,28 +35,14 @@ const [recoverAccount, setRecoverAccount] = useState(false);
 
   return (
     <div className="form-container">
-        <button type="button" onClick={() => setShowCamera(true)}>Next</button>
-        {showCamera && <Webcam audio={false} screenshotFormat="image/jpeg" height={240} width={320} videoConstraints={{ width: 1280, height: 720, facingMode: 'user', }} onUserMedia={() => { const webcam = document.querySelector('video'); const imageSrc = webcam.getScreenshot(); handleCapture(imageSrc); }} />}
-      <h2>Login</h2>
+        <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
         <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <Webcam
-          audio={false}
-          screenshotFormat="image/jpeg"
-          height={240}
-          width={320}
-          videoConstraints={{
-            width: 1280,
-            height: 720,
-            facingMode: 'user',
-          }}
-          onUserMedia={() => {
-            const webcam = document.querySelector('video');
-            const imageSrc = webcam.getScreenshot();
-            handleCapture(imageSrc);
-          }}
-        />
+
+        <button type="button" onClick={() => setShowCamera(true)}>Activate Camera</button>
+          {showCamera && <Webcam audio={false} screenshotFormat="image/jpeg" height={240} width={320} videoConstraints={{ width: 1280, height: 720, facingMode: 'user', }} onUserMedia={() => { const webcam = document.querySelector('video'); const imageSrc = webcam.getScreenshot(); handleCapture(imageSrc); }} />}
+          
         <button type="submit">Login</button>
       </form>
       <p>{message}</p>
