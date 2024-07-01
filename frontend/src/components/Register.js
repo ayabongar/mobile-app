@@ -33,6 +33,9 @@ const [showCamera, setShowCamera] = useState(false);
       const response = await axios.post('http://localhost:5000/register', formData);
       setMessage(response.data.message);
     } catch (error) {
+  return (
+    <>
+
       setMessage('Registration failed!');
     }
         <button type="button" onClick={() => setShowCamera(true)}>Activate Camera</button>
