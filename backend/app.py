@@ -7,7 +7,6 @@ from bcrypt import hashpw, gensalt, checkpw
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
-
 def init_db():
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
@@ -28,6 +27,10 @@ def register():
     role = request.form['role']
     face_image = request.files['face_image']
     face_encoding = encode_face(face_image)
+
+    if face_encoding is None:
+        return jsonify({"message": "No face found in the image!"}), 400
+
     hashed_password = hashpw(password.encode('utf-8'), gensalt())
 
     conn = sqlite3.connect('database.db')
@@ -42,8 +45,8 @@ def register():
 @app.route('/login', methods=['POST'])
 def login():
     username = request.form['username']
-    password = request.form['password']
-    face_image = request.files['face_image']
+    face_image = request.files.get('face_image')
+    password = request.form.get('password')
 
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
@@ -51,9 +54,21 @@ def login():
     user = c.fetchone()
     conn.close()
 
-    if user and checkpw(password.encode('utf-8'), user[0]) and verify_face(user[1], face_image):
-        return jsonify({"message": "Login successful!"}), 200
-    return jsonify({"message": "Login failed!"}), 401
+    if not user:
+        return jsonify({"message": "Login failed! User not found."}), 401
+
+    if face_image:
+        if verify_face(user[1], face_image):
+            return jsonify({"message": "Login successful with face recognition!"}), 200
+        else:
+            return jsonify({"message": "Face recognition failed!"}), 401
+    elif password:
+        if checkpw(password.encode('utf-8'), user[0]):
+            return jsonify({"message": "Login successful with password!"}), 200
+        else:
+            return jsonify({"message": "Password authentication failed!"}), 401
+    else:
+        return jsonify({"message": "Login failed! No method of authentication provided."}), 401
 
 @app.route('/request_ride', methods=['POST'])
 def request_ride():
@@ -73,4 +88,5 @@ def request_ride():
 if __name__ == '__main__':
     init_db()
     app.run(debug=True)
+
 
