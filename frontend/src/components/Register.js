@@ -77,4 +77,3 @@ const [showCamera, setShowCamera] = useState(false);
 
 export default Register;
 
-export default Register;
