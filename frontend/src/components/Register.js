@@ -29,19 +29,23 @@ const [showCamera, setShowCamera] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append('username', username);
-    formData.append('password', password);
-    formData.append('role', role);
-    formData.append('face_image', faceImage);
-
-    try {
-      const response = await axios.post('http://localhost:5000/register', formData);
-      setMessage(response.data.message);
     } catch (error) {
-  return (
-    <>
+      setMessage('Registration failed!');
+    }
+  };
 
+  return (
+    <div className="form-container">
+      <h2>Register</h2>
+      <form onSubmit={handleSubmit}>
+        <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
+        <input type="password" placeholder="Password" value={password} onChange={(e) => {
+          setPassword(e.target.value);
+          setPasswordStrength(validatePasswordStrength(e.target.value) ? 'Strong' : 'Weak');
+        }} />
+        <input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+        {password !== confirmPassword && <p>Passwords do not match!</p>}
+        <p>{passwordStrength}</p>
       setMessage('Registration failed!');
     }
         <button type="button" onClick={() => setShowCamera(true)}>Activate Camera</button>
