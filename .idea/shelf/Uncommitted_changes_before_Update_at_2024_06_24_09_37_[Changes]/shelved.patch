@@ -1,0 +1,149 @@
+Index: frontend/driver_main.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from kivy.app import App\r\nfrom kivy.uix.boxlayout import BoxLayout\r\nfrom kivy.uix.button import Button\r\nfrom kivy.uix.textinput import TextInput\r\nimport requests\r\n\r\nclass DriverScreen(BoxLayout):\r\n    def __init__(self, **kwargs):\r\n        super(DriverScreen, self).__init__(**kwargs)\r\n        self.orientation = 'vertical'\r\n        self.name = TextInput(hint_text='Name')\r\n        self.add_widget(self.name)\r\n        self.vehicle = TextInput(hint_text='Vehicle')\r\n        self.add_widget(self.vehicle)\r\n        self.register_button = Button(text='Register as Driver')\r\n        self.register_button.bind(on_press=self.register_driver)\r\n        self.add_widget(self.register_button)\r\n        self.status = TextInput(hint_text='Status', readonly=True)\r\n        self.add_widget(self.status)\r\n\r\n    def register_driver(self, instance):\r\n        data = {'name': self.name.text, 'vehicle': self.vehicle.text}\r\n        response = requests.post('http://localhost:5000/register_driver', data=data)\r\n        self.status.text = response.json().get('message')\r\n\r\nclass DriverApp(App):\r\n    def build(self):\r\n        return DriverScreen()\r\n\r\nif __name__ == '__main__':\r\n    DriverApp().run()\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/driver_main.py b/frontend/driver_main.py
+--- a/frontend/driver_main.py	(revision 6e70bfaedb7b2000d0d5a43f219e47db7f4e2dde)
++++ b/frontend/driver_main.py	(date 1719214504813)
+@@ -2,6 +2,7 @@
+ from kivy.uix.boxlayout import BoxLayout
+ from kivy.uix.button import Button
+ from kivy.uix.textinput import TextInput
++from kivy.uix.label import Label
+ import requests
+ 
+ class DriverScreen(BoxLayout):
+@@ -15,14 +16,27 @@
+         self.register_button = Button(text='Register as Driver')
+         self.register_button.bind(on_press=self.register_driver)
+         self.add_widget(self.register_button)
+-        self.status = TextInput(hint_text='Status', readonly=True)
++        self.status = Label(text='Status')
+         self.add_widget(self.status)
++        self.accept_ride_button = Button(text='Accept Ride')
++        self.accept_ride_button.bind(on_press=self.accept_ride)
++        self.add_widget(self.accept_ride_button)
++        self.ride_info = Label(text='No ride requests yet.')
++        self.add_widget(self.ride_info)
+ 
+     def register_driver(self, instance):
+         data = {'name': self.name.text, 'vehicle': self.vehicle.text}
+         response = requests.post('http://localhost:5000/register_driver', data=data)
+         self.status.text = response.json().get('message')
+ 
++    def accept_ride(self, instance):
++        response = requests.get('http://localhost:5000/get_ride_request')  # Implement this route
++        ride_request = response.json()
++        if ride_request:
++            self.ride_info.text = f"Ride request from {ride_request['username']} to {ride_request['destination']}."
++        else:
++            self.ride_info.text = 'No ride requests yet.'
++
+ class DriverApp(App):
+     def build(self):
+         return DriverScreen()
+Index: .idea/modules.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules.xml b/.idea/modules.xml
+new file mode 100644
+--- /dev/null	(date 1719214504805)
++++ b/.idea/modules.xml	(date 1719214504805)
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ProjectModuleManager">
++    <modules>
++      <module fileurl="file://$PROJECT_DIR$/.idea/mobile-app.iml" filepath="$PROJECT_DIR$/.idea/mobile-app.iml" />
++    </modules>
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+new file mode 100644
+--- /dev/null	(date 1719214504798)
++++ b/.idea/misc.xml	(date 1719214504798)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
++    <output url="file://$PROJECT_DIR$/out" />
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/vcs.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/vcs.xml b/.idea/vcs.xml
+new file mode 100644
+--- /dev/null	(date 1719214504825)
++++ b/.idea/vcs.xml	(date 1719214504825)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="VcsDirectoryMappings">
++    <mapping directory="" vcs="Git" />
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/.gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/.gitignore b/.idea/.gitignore
+new file mode 100644
+--- /dev/null	(date 1719214504819)
++++ b/.idea/.gitignore	(date 1719214504819)
+@@ -0,0 +1,3 @@
++# Default ignored files
++/shelf/
++/workspace.xml
+Index: .idea/mobile-app.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/mobile-app.iml b/.idea/mobile-app.iml
+new file mode 100644
+--- /dev/null	(date 1719214504836)
++++ b/.idea/mobile-app.iml	(date 1719214504836)
+@@ -0,0 +1,9 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<module type="JAVA_MODULE" version="4">
++  <component name="NewModuleRootManager" inherit-compiler-output="true">
++    <exclude-output />
++    <content url="file://$MODULE_DIR$" />
++    <orderEntry type="inheritedJdk" />
++    <orderEntry type="sourceFolder" forTests="false" />
++  </component>
++</module>
+\ No newline at end of file
+Index: backend/database.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import sqlite3\r\n\r\ndef init_db():\r\n    conn = sqlite3.connect('database.db')\r\n    c = conn.cursor()\r\n    c.execute('''CREATE TABLE IF NOT EXISTS users (\r\n        id INTEGER PRIMARY KEY,\r\n        username TEXT NOT NULL,\r\n        password TEXT NOT NULL,\r\n        face_encoding BLOB\r\n    )''')\r\n    c.execute('''CREATE TABLE IF NOT EXISTS drivers (\r\n        id INTEGER PRIMARY KEY,\r\n        name TEXT NOT NULL,\r\n        vehicle TEXT NOT NULL\r\n    )''')\r\n    conn.commit()\r\n    conn.close()\r\n\r\ninit_db()\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/database.py b/backend/database.py
+--- a/backend/database.py	(revision 6e70bfaedb7b2000d0d5a43f219e47db7f4e2dde)
++++ b/backend/database.py	(date 1719214504830)
+@@ -1,4 +1,5 @@
+ import sqlite3
++from bcrypt import hashpw, gensalt
+ 
+ def init_db():
+     conn = sqlite3.connect('database.db')
