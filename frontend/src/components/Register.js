@@ -35,6 +35,8 @@ const [showCamera, setShowCamera] = useState(false);
     } catch (error) {
       setMessage('Registration failed!');
     }
+        <button type="button" onClick={() => setShowCamera(true)}>Activate Camera</button>
+        {showCamera && <Webcam audio={false} screenshotFormat="image/jpeg" height={240} width={320} videoConstraints={{ width: 1280, height: 720, facingMode: 'user', }} onUserMedia={() => { const webcam = document.querySelector('video'); const imageSrc = webcam.getScreenshot(); handleCapture(imageSrc); }} />}
   };
 
   return (
