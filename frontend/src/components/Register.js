@@ -5,6 +5,13 @@ import './styles.css';
 
 const Register = () => {
   const [username, setUsername] = useState('');
+const validatePasswordStrength = (password) => {
+  const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  return regex.test(password);
+};
+const [confirmPassword, setConfirmPassword] = useState('');
+const [passwordStrength, setPasswordStrength] = useState('');
+const [showCamera, setShowCamera] = useState(false);
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('');
   const [faceImage, setFaceImage] = useState(null);
@@ -28,9 +35,14 @@ const Register = () => {
     } catch (error) {
       setMessage('Registration failed!');
     }
+        <button type="button" onClick={() => setShowCamera(true)}>Activate Camera</button>
+        {showCamera && <Webcam audio={false} screenshotFormat="image/jpeg" height={240} width={320} videoConstraints={{ width: 1280, height: 720, facingMode: 'user', }} onUserMedia={() => { const webcam = document.querySelector('video'); const imageSrc = webcam.getScreenshot(); handleCapture(imageSrc); }} />}
   };
 
   return (
+        <input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+        {password !== confirmPassword && <p>Passwords do not match!</p>}
+        <p>{passwordStrength}</p>
     <div className="form-container">
       <h2>Register</h2>
       <form onSubmit={handleSubmit}>
