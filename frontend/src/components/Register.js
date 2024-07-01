@@ -37,9 +37,10 @@ const [showCamera, setShowCamera] = useState(false);
 
   return (
     <div className="form-container">
-      <h2>Register</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
+        <select value={role} onChange={(e) => setRole(e.target.value)}>
+          <option value="user">User</option>
+          <option value="driver">Driver</option>
+        </select>
         <input type="password" placeholder="Password" value={password} onChange={(e) => {
           setPassword(e.target.value);
           setPasswordStrength(validatePasswordStrength(e.target.value) ? 'Strong' : 'Weak');
