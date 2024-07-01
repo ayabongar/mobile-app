@@ -30,6 +30,7 @@ const [recoverAccount, setRecoverAccount] = useState(false);
       }
     } catch (error) {
       setMessage('Login failed!');
+        style={{ margin: '10px' }}
     }
   };
 
