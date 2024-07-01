@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Webcam from 'react-webcam';
+import './styles.css';
 
 const Login = ({ history }) => {
   const [username, setUsername] = useState('');
@@ -7,21 +9,21 @@ const Login = ({ history }) => {
   const [faceImage, setFaceImage] = useState(null);
   const [message, setMessage] = useState('');
 
-  const handleFileChange = (e) => {
-    setFaceImage(e.target.files[0]);
+  const handleCapture = (imageSrc) => {
+    setFaceImage(imageSrc);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append('username', username);
-    formData.append('password', password);
-    formData.append('face_image', faceImage);
+    if (password) formData.append('password', password);
+    if (faceImage) formData.append('face_image', faceImage);
 
     try {
       const response = await axios.post('http://localhost:5000/login', formData);
       setMessage(response.data.message);
-      if (response.data.message === 'Login successful!') {
+      if (response.data.message.includes('successful')) {
         history.push('/request-ride');
       }
     } catch (error) {
@@ -30,12 +32,27 @@ const Login = ({ history }) => {
   };
 
   return (
-    <div>
+    <div className="form-container">
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
         <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <input type="file" onChange={handleFileChange} />
+        <Webcam
+          audio={false}
+          screenshotFormat="image/jpeg"
+          height={240}
+          width={320}
+          videoConstraints={{
+            width: 1280,
+            height: 720,
+            facingMode: 'user',
+          }}
+          onUserMedia={() => {
+            const webcam = document.querySelector('video');
+            const imageSrc = webcam.getScreenshot();
+            handleCapture(imageSrc);
+          }}
+        />
         <button type="submit">Login</button>
       </form>
       <p>{message}</p>
@@ -44,3 +61,4 @@ const Login = ({ history }) => {
 };
 
 export default Login;
+

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Webcam from 'react-webcam';
+import './styles.css';
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -8,8 +10,8 @@ const Register = () => {
   const [faceImage, setFaceImage] = useState(null);
   const [message, setMessage] = useState('');
 
-  const handleFileChange = (e) => {
-    setFaceImage(e.target.files[0]);
+  const handleCapture = (imageSrc) => {
+    setFaceImage(imageSrc);
   };
 
   const handleSubmit = async (e) => {
@@ -29,18 +31,35 @@ const Register = () => {
   };
 
   return (
-    <div>
+    <div className="form-container">
       <h2>Register</h2>
       <form onSubmit={handleSubmit}>
         <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
         <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
         <input type="text" placeholder="Role (user/driver)" value={role} onChange={(e) => setRole(e.target.value)} />
-        <input type="file" onChange={handleFileChange} />
+        <Webcam
+          audio={false}
+          screenshotFormat="image/jpeg"
+          height={240}
+          width={320}
+          videoConstraints={{
+            width: 1280,
+            height: 720,
+            facingMode: 'user',
+          }}
+          onUserMedia={() => {
+            const webcam = document.querySelector('video');
+            const imageSrc = webcam.getScreenshot();
+            handleCapture(imageSrc);
+          }}
+        />
         <button type="submit">Register</button>
       </form>
       <p>{message}</p>
     </div>
   );
 };
+
+export default Register;
 
 export default Register;
