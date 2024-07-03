@@ -2,14 +2,6 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Webcam from 'react-webcam';
 import './styles.css';
-
-// const Register = () => {
-//   const [username, setUsername] = useState('');
-//   const validatePasswordStrength = (password) => {} import React, { useState } from 'react';
-//   import axios from 'axios';
-//   import Webcam from 'react-webcam';
-//   import './styles.css';
-// };
   
   const Register = () => {
     const [username, setUsername] = useState('');
