@@ -30,7 +30,7 @@ const [recoverAccount, setRecoverAccount] = useState(false);
       }
     } catch (error) {
       setMessage('Login failed!');
-        style={{ margin: '10px' }}
+        
         <button type="button" style={{ margin: '10px' }} onClick={() => setShowCamera(true)}>Activate Camera</button>
         {showCamera && (
           <Webcam
@@ -51,9 +51,7 @@ const [recoverAccount, setRecoverAccount] = useState(false);
             }}
           />
         )}
-        <button type="button" onClick={() => setShowCamera(true)}>Next</button>
-        {showCamera && <Webcam audio={false} screenshotFormat="image/jpeg" height={240} width={320} videoConstraints={{ width: 1280, height: 720, facingMode: 'user', }} onUserMedia={() => { const webcam = document.querySelector('video'); const imageSrc = webcam.getScreenshot(); handleCapture(imageSrc); }} />}
-      <h2>Login</h2>
+        <h2>Login</h2>
     }
   };
   return (
