@@ -3,10 +3,15 @@ from flask_cors import CORS
 import sqlite3
 from face_recognition import encode_face, verify_face
 from bcrypt import hashpw, gensalt, checkpw
+import face_recognition
+import io
+from PIL import Image
+import base64
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
+# Initialize the database if not exists
 def init_db():
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
@@ -20,27 +25,49 @@ def init_db():
     conn.commit()
     conn.close()
 
+# Function to connect to the database
+def get_db_connection():
+    conn = sqlite3.connect('database.db')
+    conn.row_factory = sqlite3.Row
+    return conn    
+
 @app.route('/register', methods=['POST'])
 def register():
-    username = request.form['username']
-    password = request.form['password']
-    role = request.form['role']
-    face_image = request.files['face_image']
-    face_encoding = encode_face(face_image)
+    try:
+        username = request.form['username']
+        password = request.form['password']
+        role = request.form['role']
+        face_image = request.form['face_image']
 
-    if face_encoding is None:
-        return jsonify({"message": "No face found in the image!"}), 400
+        # Debugging: Log received data
+        print(f"Username: {username}")
+        print(f"Password: {password}")
+        print(f"Role: {role}")
+        print(f"Face image length: {len(face_image)}")
 
-    hashed_password = hashpw(password.encode('utf-8'), gensalt())
+        # Convert the image from base64
+        face_image_data = base64.b64decode(face_image.split(',')[1])
+        image = face_recognition.load_image_file(io.BytesIO(face_image_data))
+        face_encoding = face_recognition.face_encodings(image)
 
-    conn = sqlite3.connect('database.db')
-    c = conn.cursor()
-    c.execute("INSERT INTO users (username, password, face_encoding, role) VALUES (?, ?, ?, ?)",
-              (username, hashed_password, face_encoding, role))
-    conn.commit()
-    conn.close()
+        if len(face_encoding) == 0:
+            return jsonify({"message": "No face detected!"}), 400
+        
+        face_encoding = face_encoding[0].tobytes()
 
-    return jsonify({"message": "User registered successfully!"}), 201
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
+        conn = get_db_connection()
+        conn.execute('INSERT INTO users (username, password, role, face_encoding) VALUES (?, ?, ?, ?)',
+                     (username, hashed_password, role, face_encoding))
+        conn.commit()
+        conn.close()
+
+        return jsonify({"message": "Registration successful!"})
+    except Exception as e:
+        print(f"Error during registration: {str(e)}")
+        return jsonify({"message": "Registration failed!", "error": str(e)}), 500
+
 
 @app.route('/login', methods=['POST'])
 def login():
