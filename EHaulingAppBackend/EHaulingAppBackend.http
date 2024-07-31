@@ -1,0 +1,6 @@
+@EHaulingAppBackend_HostAddress = http://localhost:5064
+
+GET {{EHaulingAppBackend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

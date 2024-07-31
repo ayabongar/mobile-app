@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import Webcam from 'react-webcam';
 import './styles.css';
 
 const Login = ({ history }) => {
-const [showCamera, setShowCamera] = useState(false);
-const [recoverAccount, setRecoverAccount] = useState(false);
+  const [showCamera, setShowCamera] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [faceImage, setFaceImage] = useState(null);
   const [message, setMessage] = useState('');
+  const webcamRef = useRef(null);
 
-  const handleCapture = (imageSrc) => {
+  const handleCapture = () => {
+    const imageSrc = webcamRef.current.getScreenshot();
     setFaceImage(imageSrc);
+    setShowCamera(false);
   };
 
   const handleSubmit = async (e) => {
@@ -30,40 +32,33 @@ const [recoverAccount, setRecoverAccount] = useState(false);
       }
     } catch (error) {
       setMessage('Login failed!');
-        
-        <button type="button" style={{ margin: '10px' }} onClick={() => setShowCamera(true)}>Activate Camera</button>
-        {showCamera && (
-          <Webcam
-            audio={false}
-            screenshotFormat="image/jpeg"
-            height={240}
-            width={320}
-            videoConstraints={{
-              width: 1280,
-              height: 720,
-              facingMode: 'user',
-            }}
-            onUserMedia={() => {
-              const webcam = document.querySelector('video');
-              const imageSrc = webcam.getScreenshot();
-              handleCapture(imageSrc);
-              setShowCamera(false);  // Close the camera once the picture is taken
-            }}
-          />
-        )}
-        <h2>Login</h2>
     }
   };
+
   return (
     <div className="form-container">
-        <h2>Login</h2>
+      <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
         <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-
         <button type="button" onClick={() => setShowCamera(true)}>Activate Camera</button>
-          {showCamera && <Webcam audio={false} screenshotFormat="image/jpeg" height={240} width={320} videoConstraints={{ width: 1280, height: 720, facingMode: 'user', }} onUserMedia={() => { const webcam = document.querySelector('video'); const imageSrc = webcam.getScreenshot(); handleCapture(imageSrc); }} />}
-          
+        {showCamera && (
+          <div>
+            <Webcam
+              audio={false}
+              ref={webcamRef}
+              screenshotFormat="image/jpeg"
+              height={240}
+              width={320}
+              videoConstraints={{
+                width: 1280,
+                height: 720,
+                facingMode: 'user',
+              }}
+            />
+            <button type="button" onClick={handleCapture}>Capture Image</button>
+          </div>
+        )}
         <button type="submit">Login</button>
       </form>
       <p>{message}</p>
@@ -72,4 +67,3 @@ const [recoverAccount, setRecoverAccount] = useState(false);
 };
 
 export default Login;
-

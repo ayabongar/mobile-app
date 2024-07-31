@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import Webcam from 'react-webcam';
 import './styles.css';
@@ -14,12 +14,15 @@ const Register = () => {
   };
 
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('user');
+  const [role, setRole] = useState('');
   const [faceImage, setFaceImage] = useState(null);
   const [message, setMessage] = useState('');
+  const webcamRef = useRef(null);
 
-  const handleCapture = (imageSrc) => {
+  const handleCapture = () => {
+    const imageSrc = webcamRef.current.getScreenshot();
     setFaceImage(imageSrc);
+    setShowCamera(false);
   };
 
   const handleSubmit = async (e) => {
@@ -31,7 +34,11 @@ const Register = () => {
     formData.append('face_image', faceImage);
 
     try {
-      const response = await axios.post('http://localhost:5000/register', formData);
+      const response = await axios.post('http://localhost:5000/register', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       setMessage(response.data.message);
     } catch (error) {
       setMessage('Registration failed!');
@@ -54,27 +61,25 @@ const Register = () => {
           <option value="user">User</option>
           <option value="driver">Driver</option>
         </select>
-        <button type="button" style={{ margin: '10px' }} onClick={() => setShowCamera(true)}>Activate Camera</button>
+        <button type="button" onClick={() => setShowCamera(true)}>Activate Camera</button>
         {showCamera && (
-          <Webcam
-            audio={false}
-            screenshotFormat="image/jpeg"
-            height={240}
-            width={320}
-            videoConstraints={{
-              width: 1280,
-              height: 720,
-              facingMode: 'user',
-            }}
-            onUserMedia={() => {
-              const webcam = document.querySelector('video');
-              const imageSrc = webcam.getScreenshot();
-              handleCapture(imageSrc);
-              setShowCamera(false);  // Close the camera once the picture is taken
-            }}
-          />
+          <div>
+            <Webcam
+              audio={false}
+              ref={webcamRef}
+              screenshotFormat="image/jpeg"
+              height={240}
+              width={320}
+              videoConstraints={{
+                width: 1280,
+                height: 720,
+                facingMode: 'user',
+              }}
+            />
+            <button type="button" onClick={handleCapture}>Capture Image</button>
+          </div>
         )}
-        <button type="submit" style={{ margin: '10px' }}>Register</button>
+        <button type="submit">Register</button>
       </form>
       <p>{message}</p>
     </div>
